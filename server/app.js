@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import fs from "fs";
 import http from "http";
-import { initSockets } from "./utils/sockets.js";
+import { initSockets } from "./sockets.js";
 
 const app = express();
 
@@ -14,7 +14,7 @@ app.use(
   cors({
     origin: process.env.CORS_ORIGIN,
     credentials: true,
-  })
+  }),
 );
 
 // creating public/temp directory
@@ -25,6 +25,7 @@ if (!fs.existsSync(dir)) {
   console.log(`Directory ${dir} created successfully.`);
 }
 
+app.disable("x-powered-by");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("uploads"));

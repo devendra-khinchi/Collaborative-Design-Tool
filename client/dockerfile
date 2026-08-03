@@ -1,0 +1,19 @@
+FROM node:24-alpine
+
+WORKDIR /app
+COPY package*.json ./
+
+RUN npm ci
+
+COPY . .
+
+ARG VITE_BACKEND_API_BASE_URL
+ARG VITE_BACKEND_SOCKET_BASE_URL
+
+ENV VITE_BACKEND_API_BASE_URL=$VITE_BACKEND_API_BASE_URL
+ENV VITE_BACKEND_SOCKET_BASE_URL=$VITE_BACKEND_SOCKET_BASE_URL
+
+RUN npm run build
+EXPOSE 3000
+
+CMD ["npm", "run", "preview", "--", "--host", "--port", "3000"]

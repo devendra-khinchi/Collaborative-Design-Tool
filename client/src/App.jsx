@@ -8,7 +8,7 @@ import PrivateRoute from "./utils/PrivateRoute";
 import Dashboard from "./pages/Mockups/Dashboard";
 import NotFound from "./pages/NotFound";
 import Layout from "./components/Layout/Layout";
-import { MockupProvider } from "./utils/contexts/mockupContext";
+import { MockupProvider } from "./utils/contexts/MockupContext";
 
 function App() {
   return (

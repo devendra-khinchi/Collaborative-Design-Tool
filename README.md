@@ -29,7 +29,8 @@ A realtime collaborative mockup feedback application that lets teams share desig
 ### Prerequisites
 
 - Node.js and npm
-- MongoDB connection URI (MongoDB Atlas or local)
+- Docker & Docker Compose (for containerized setup)
+- MongoDB connection URI (MongoDB Atlas or local, or use Docker Compose)
 
 ### Clone & Install
 
@@ -71,7 +72,23 @@ npm run dev
 ```
 
 Frontend default dev server: http://localhost:5173
-Backend default dev server: http://localhost:5000
+Backend default dev server: http://localhost:8000
+
+---
+
+## 🐳 Docker & Compose Setup
+
+You can run the entire stack (MongoDB, backend, frontend) using Docker Compose:
+
+```bash
+docker compose up --build
+```
+
+- Backend: http://localhost:8000
+- Frontend: http://localhost:3000
+- MongoDB: localhost:27017 (default user: root, password: example)
+
+Environment variables are set in `compose.yaml` for local development. See `server/.dockerignore` and `server/dockerfile` for build details.
 
 ---
 

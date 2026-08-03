@@ -1,0 +1,40 @@
+services:
+  db:
+    image: mongo:7.0.5
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    restart: unless-stopped
+
+  backend:
+    build: ./server
+    ports:
+      - "8000:8000"
+    environment:
+      PORT: 8000
+      MONGODB_URI: mongodb://root:example@db:27017/collaborativeDesignTool?authSource=admin
+      CORS_ORIGIN: http://localhost:3000
+      JWT_TOKEN_SECRET: your_jwt_secret
+      JWT_TOKEN_EXPIRY: 1d
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./client
+      args:
+        VITE_BACKEND_API_BASE_URL: http://localhost:8000/api/v1
+        VITE_BACKEND_SOCKET_BASE_URL: http://localhost:8000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  mongo_data:

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useMockup } from "../../utils/contexts/mockupContext";
+import { useMockup } from "../../utils/contexts/MockupContext";
 import ModalBackdrop from "../../components/ui/ModalBackdrop";
 import LoadingSpinner from "../../components/ui/LoadingSpinner";
 import { Link } from "react-router";
