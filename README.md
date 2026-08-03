@@ -1,26 +1,169 @@
 # Collaborative Design Tool 🖌️
 
-A realtime collaborative mockup feedback application that lets teams share design mockups, add pinpointed feedback, and discuss changes in real time using WebSockets. This project has a React + Vite frontend and an Express + Node backend with MongoDB for persistence.
+A full-stack real-time collaborative design feedback platform built with **React, Node.js, Express, MongoDB, Socket.IO, and Docker**.
+
+The application enables teams to upload design mockups, place coordinate-based annotations, and collaborate in real time through WebSockets. All feedback is persisted in MongoDB, while JWT authentication secures user access.
 
 ---
 
-## 🔧 Features
+## 📸 Screenshots
 
-- Upload and view design mockups (images)
-- Add feedback points anchored to coordinates on the mockup
-- Realtime updates using Socket.IO for live collaboration
-- User authentication (signup/login) with JWT
-- Basic file uploads using Multer
+### Login
+
+![Login](screenshots/Login.png)
+
+### Dashboard
+
+![Dashboard](screenshots/Dashboard.png)
+
+### Reviewer Open link share by designer
+
+![Reviewer Details](screenshots/Reviewer.png)
+
+![Intial Feedback](screenshots/Reviewer-comment.png)
+
+### Reviewer Screen
+
+![Reviewer Chats](screenshots/reviewer-feedbacks-chat.png)
+
+### Designer Screen
+
+![Designer Reply](screenshots/designer-reply-chat.png)
+
+---
+
+## ✨ Features
+
+- Secure user authentication using JWT
+- Upload and manage design mockups
+- Coordinate-based feedback annotations
+- Real-time collaboration using Socket.IO rooms
+- Threaded discussions for each feedback point
+- Persistent data storage using MongoDB
+- Responsive React interface
+- Dockerized development environment
+
+---
+
+## 🏗️ Architecture
+
+```
+React (Vite)
+        │
+ REST API + Socket.IO
+        │
+ Node.js + Express
+        │
+ Controllers
+        │
+ Services
+        │
+ Mongoose Models
+        │
+ MongoDB
+```
+
+The backend follows a layered architecture:
+
+```
+Routes
+   ↓
+Controllers
+   ↓
+Services
+   ↓
+Models (MongoDB)
+```
+
+This separation keeps routing, business logic, and database operations independent and easier to maintain.
 
 ---
 
 ## 📦 Tech Stack
 
-- Frontend: React (Vite), Tailwind CSS
-- Backend: Node.js, Express, Socket.IO
-- Database: MongoDB (Mongoose)
-- Auth: JSON Web Tokens (JWT)
-- File Uploads: Multer
+### Frontend
+
+- React
+- Vite
+- Tailwind CSS
+
+### Backend
+
+- Node.js
+- Express.js
+- Socket.IO
+- Express Validator
+
+### Database
+
+- MongoDB
+- Mongoose
+
+### Authentication
+
+- JWT
+- bcryptjs
+
+### File Uploads
+
+- Multer
+
+### DevOps
+
+- Docker
+- Docker Compose
+
+---
+
+## 📂 Project Structure
+
+```
+client/
+    src/
+        components/
+        pages/
+        context/
+
+server/
+    controllers/
+    middleware/
+    models/
+    routes/
+    services/
+    utils/
+```
+
+---
+
+## ⚡ Real-time Collaboration
+
+When a user opens a mockup:
+
+1. The client joins a Socket.IO room associated with that mockup.
+2. Creating a feedback point stores it in MongoDB.
+3. The backend broadcasts the update to everyone viewing the same mockup.
+4. Connected clients update instantly without refreshing the page.
+
+This approach eliminates polling and enables real-time collaboration.
+
+---
+
+## 🔐 Authentication
+
+Authentication is implemented using JSON Web Tokens (JWT).
+
+- User signup/login
+- Password hashing using bcrypt
+- Protected API routes
+- Authenticated access to user-owned resources
+
+---
+
+## 📤 File Uploads
+
+Image uploads are handled using **Multer**.
+
+During local development, uploaded files are stored in the server's local uploads directory and served as static assets.
 
 ---
 
@@ -28,80 +171,149 @@ A realtime collaborative mockup feedback application that lets teams share desig
 
 ### Prerequisites
 
-- Node.js and npm
-- Docker & Docker Compose (for containerized setup)
-- MongoDB connection URI (MongoDB Atlas or local, or use Docker Compose)
+- Node.js
+- npm
+- Docker & Docker Compose
 
-### Clone & Install
+---
+
+### Clone Repository
 
 ```bash
-# clone the repo
 git clone https://github.com/devendra-khinchi/Collaborative-Design-Tool.git
-cd Collaborative-Design-Tool
 
-# install server dependencies
+cd Collaborative-Design-Tool
+```
+
+---
+
+### Local Development
+
+Install dependencies
+
+```bash
 cd server
 npm install
 
-# install client dependencies
 cd ../client
 npm install
 ```
 
-### Environment Variables
+Create `.env` inside `server/`
 
-Create a `.env` file in the `server/` folder and provide the required variables:
-
-```
+```env
 MONGODB_URI=your_mongodb_uri
-PORT=5000
-JWT_TOKEN_SECRET=your_jwt_secret
+PORT=8000
+JWT_TOKEN_SECRET=your_secret
 JWT_TOKEN_EXPIRY=1d
+CORS_ORIGIN=http://localhost:5173
 ```
 
-### Run Locally
+Run backend
 
 ```bash
-# start the backend (with nodemon for development)
 cd server
 npm run dev
+```
 
-# in a separate terminal, start the frontend
+Run frontend
+
+```bash
 cd client
 npm run dev
 ```
 
-Frontend default dev server: http://localhost:5173
-Backend default dev server: http://localhost:8000
+Frontend
+
+```
+http://localhost:5173
+```
+
+Backend
+
+```
+http://localhost:8000
+```
 
 ---
 
-## 🐳 Docker & Compose Setup
+## 🐳 Docker
 
-You can run the entire stack (MongoDB, backend, frontend) using Docker Compose:
+The complete application can be started using Docker Compose.
 
 ```bash
 docker compose up --build
 ```
 
-- Backend: http://localhost:8000
-- Frontend: http://localhost:3000
-- MongoDB: localhost:27017 (default user: root, password: example)
+This provisions:
 
-Environment variables are set in `compose.yaml` for local development. See `server/.dockerignore` and `server/dockerfile` for build details.
+- React Frontend
+- Express Backend
+- MongoDB
+- Persistent MongoDB volume
+
+Application URLs
+
+Frontend
+
+```
+http://localhost:3000
+```
+
+Backend
+
+```
+http://localhost:8000
+```
+
+MongoDB
+
+```
+localhost:27017
+```
 
 ---
 
-## 🔁 Realtime Collaboration
+## 📡 API Overview
 
-This project uses Socket.IO to broadcast events (new feedback points, updates, etc.) so multiple users viewing the same mockup see updates instantly.
+```
+POST   /api/v1/auth/signup
+POST   /api/v1/auth/login
+
+GET    /api/v1/mockups
+POST   /api/v1/mockups
+DELETE /api/v1/mockups/:id
+```
 
 ---
 
-## 📬 Contact
+## 📚 Key Learnings
 
-Created by Devendra Khinchi.
+This project helped me gain practical experience with:
+
+- Designing REST APIs using Express.js
+- Layered backend architecture (Controller → Service → Model)
+- JWT authentication
+- MongoDB schema design
+- Real-time communication using Socket.IO
+- File uploads using Multer
+- Dockerizing a multi-container application
 
 ---
 
-> Thanks for checking out the Collaborative Design Tool ✨
+## 🚀 Future Improvements
+
+- JWT-authenticated Socket.IO connections
+- Cloud Storage integration
+- Structured logging with Pino
+- Request validation using Zod
+- Online user presence
+- Redis Pub/Sub for horizontal Socket.IO scaling
+
+---
+
+## 👨‍💻 Author
+
+**Devendra Khinchi**
+
+If you found this project useful, feel free to star the repository.
